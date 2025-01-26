@@ -1,6 +1,6 @@
 
 const devUrl = "http://localhost:4000/"
-const prodURL ="https://hackathone-backend-eta.vercel.app/"
+const prodURL ="https://hackathone-backend-yaid.vercel.app/"
 
 export const BASE_URL = prodURL
 

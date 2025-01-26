@@ -1,85 +1,132 @@
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
+import wedding from "../../public/images/download.jpeg";
+import construction from "../../public/images/images.jpeg";
+import business from "../../public/images/images (1).jpeg";
+import education from "../../public/images/images (2).jpeg";
+import HomeCard from "../components/homeCards";
+import Modal from "../components/modal";
+import Footer from "../components/footer";
+import Navbar from "../components/header";
 
 export default function Dashboard() {
-  const [sidebar, setSidebarOpen] = useState(false);
-  const sidebarRef = useRef(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [formData, setFormData] = useState({
+    subCategory: "",
+    deposit: "",
+    loanPeriod: "",
+  });
 
-  // Toggle sidebar visibility
-  const toggleSidebar = () => setSidebarOpen(!sidebar);
+  const handleClick = (category) => {
+    setSelectedCategory(category);
+    setIsModalOpen(true);
+  };
 
-  // Close sidebar if clicked outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
-        setSidebarOpen(false);
-      }
-    };
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+  const calculateLoan = () => {
+    const { deposit, loanPeriod } = formData;
+    if (!deposit || !loanPeriod) {
+      alert("Please fill all fields!");
+      return;
+    }
+
+    const estimatedBreakdown = (parseFloat(deposit) * 1.1) / loanPeriod;
+    alert(`Estimated Monthly Payment: ${estimatedBreakdown.toFixed(2)}`);
+  };
 
   return (
     <>
-      {/* Button to toggle sidebar */}
-      <button
-        onClick={toggleSidebar}
-        type="button"
-        className="inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-      >
-        <span className="sr-only">Open sidebar</span>
-        <svg
-          className="w-6 h-6"
-          aria-hidden="true"
-          fill="currentColor"
-          viewBox="0 0 20 20"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            clipRule="evenodd"
-            fillRule="evenodd"
-            d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"
-          />
-        </svg>
-      </button>
+      <Navbar />
+      <section className="bg-white text-black body-font">
+        <div className="container px-5 py-24 mx-auto">
+          <div className="flex flex-wrap -m-4">
+            <HomeCard
+              title={"Wedding Loan"}
+              description={""}
+              image={wedding}
+              text={"See more"}
+              onClick={() => handleClick("Wedding Loan")}
+            />
+            <HomeCard
+              title={"Construction Loan"}
+              description={""}
+              image={construction}
+              text={"See more"}
+              onClick={() => handleClick("Construction Loan")}
+            />
+            <HomeCard
+              title={"Business Loan"}
+              description={""}
+              image={business}
+              text={"See more"}
+              onClick={() => handleClick("Business Loan")}
+            />
+            <HomeCard
+              title={"Education Loan"}
+              description={""}
+              image={education}
+              text={"See more"}
+              onClick={() => handleClick("Education Loan")}
+            />
+          </div>
+        </div>
+      </section>
 
-      {/* Sidebar */}
-      <aside
-        ref={sidebarRef}
-        id="default-sidebar"
-        className={`fixed top-0 left-0 z-40 w-64 h-screen transition-transform ${sidebar ? "translate-x-0" : "-translate-x-full"
-          } sm:translate-x-0 bg-gray-50 dark:bg-gray-800`}
-        aria-label="Sidebar"
-      >
-        <div className="h-full px-3 py-4 overflow-y-auto">
+      {isModalOpen && (
+        <Modal onClose={() => setIsModalOpen(false)}>
+          <h2 className="text-xl font-bold text-black mb-4">{selectedCategory}</h2>
+          <form className="space-y-4">
+            <div>
+              <label className="block mb-2 text-black">Subcategory:</label>
+              <input
+                type="text"
+                name="subCategory"
+                value={formData.subCategory}
+                onChange={handleInputChange}
+                className="border rounded p-2 w-full focus:ring focus:ring-gray-500"
+              />
+            </div>
+            <div>
+              <label className="block mb-2 text-black">Initial Deposit:</label>
+              <input
+                type="number"
+                name="deposit"
+                value={formData.deposit}
+                onChange={handleInputChange}
+                className="border rounded p-2 w-full focus:ring focus:ring-gray-500"
+              />
+            </div>
+            <div>
+              <label className="block mb-2 text-black">Loan Period (months):</label>
+              <input
+                type="number"
+                name="loanPeriod"
+                value={formData.loanPeriod}
+                onChange={handleInputChange}
+                className="border rounded p-2 w-full focus:ring focus:ring-gray-500"
+              />
+            </div>
+          </form>
           <button
-            onClick={toggleSidebar}
-            className="absolute top-3 right-3 text-white text-xl"
+            onClick={calculateLoan}
+            className="bg-black text-white rounded px-4 py-2 mt-4 hover:bg-gray-800"
           >
-            X
+            Calculate Loan
           </button>
-          <ul className="space-y-2 font-medium">
-            <li>
-              <a
-                href="#"
-                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-              >
-                <span className="ms-3">Dashboard</span>
-              </a>
-            </li>
-            {/* Add additional menu items here */}
-          </ul>
-        </div>
-      </aside>
-
-      {/* Main Content */}
-      <div className="p-4 sm:ml-64">
-        <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
-          <p className="text-gray-500">Content goes here.</p>
-        </div>
-      </div>
+        </Modal>
+      )}
+      <Footer />
     </>
   );
 }
+
+
+
+
