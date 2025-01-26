@@ -1,5 +1,5 @@
 import { useState } from "react";
-import wedding from "../../public/images/download.jpeg";
+import wedding from "../../public/images/images (3).jpeg";
 import construction from "../../public/images/images.jpeg";
 import business from "../../public/images/images (1).jpeg";
 import education from "../../public/images/images (2).jpeg";
